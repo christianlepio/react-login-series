@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import axios from "../api/axios"
 
@@ -123,7 +124,7 @@ const Register = () => {
                 (
                     <section className="px-4 py-4 shadow border rounded-4 align-self-center">
                         <h1 className="h1 mb-4 mt-2 text-center">You have successfully registered your account!</h1>
-                        <p className="text-center fs-6 mt-3 lead">Go and <a href="#">Sign In</a> now!</p>
+                        <p className="text-center fs-6 mt-3 lead">Go and <Link to='/login'>Sign In</Link> now!</p>
                     </section>
                 ) : (
                 
@@ -235,7 +236,7 @@ const Register = () => {
                         
                         <p className="text-center fs-6 mt-3 lead">
                             Already registered? <br />
-                            <a href="#">Sign In</a>
+                            <Link to='/login'>Sign In</Link>
                         </p>
 
                     </section>

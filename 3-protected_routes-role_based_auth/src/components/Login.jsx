@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { useContext, useEffect, useRef, useState } from "react"
 import AuthContext from "../context/AuthProvider"
 import axios from "../api/axios"
@@ -80,7 +81,7 @@ const Login = () => {
                 (
                     <section className="px-4 py-4 shadow border rounded-4 align-self-center">
                         <h1 className="h1 mb-4 mt-2 text-center">You have successfully logged in your account!</h1>
-                        <p className="text-center fs-6 mt-3 lead">Go to <a href="#">Home</a> now!</p>
+                        <p className="text-center fs-6 mt-3 lead">Go to <Link to='/'>Home</Link> now!</p>
                     </section>
                 ) : (
                     <section className="px-4 py-4 mx-4 shadow border rounded-4 align-self-center">
@@ -134,7 +135,7 @@ const Login = () => {
                         
                         <p className="text-center fs-6 mt-3 lead">
                             Need an Account? <br />
-                            <a href="#">Sign Up</a>
+                            <Link to='/register'>Sign Up</Link>
                         </p>
 
                     </section>
