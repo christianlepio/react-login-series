@@ -1,13 +1,22 @@
-import { Link } from "react-router-dom"
-import { useContext, useEffect, useRef, useState } from "react"
-import AuthContext from "../context/AuthProvider"
+import { Link, useNavigate, useLocation } from "react-router-dom"
+import { useEffect, useRef, useState } from "react"
+//import custom hook
+import useAuth from "../hooks/useAuth"
+
 import axios from "../api/axios"
 
 const LOGIN_URL = '/auth' //endpoint url for backend api (nodeJS: 14-Data-Models)
 
 const Login = () => {
-    //get setAuth state from context 
-    const { setAuth } = useContext(AuthContext)
+    //custom hook to get setAuth state from context 
+    const { setAuth } = useAuth()
+
+    //initialize useNavigate()
+    const navigate = useNavigate()
+    //initialize location history
+    const location = useLocation()
+    //get previous location(url)
+    const from = location.state?.from?.pathname || '/'
 
     const userRef = useRef()
     const errRef = useRef()
@@ -16,7 +25,6 @@ const Login = () => {
     const [pwd, setPwd] = useState('')
 
     const [errMsg, setErrMsg] = useState('')
-    const [success, setSuccess] = useState(false)
 
     useEffect(() => {
         //focus on user input when page loads
@@ -55,7 +63,9 @@ const Login = () => {
             setAuth({ user, pwd, roles, accessToken })
             setUser('')
             setPwd('')
-            setSuccess(true)
+            //if user logged in, navigate page to where he/she  
+            //requested before logging in, otherwise go to home page
+            navigate(from, { replace: true })
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response!')
@@ -76,72 +86,60 @@ const Login = () => {
     const canSignIn = [user, pwd,].every(Boolean)
 
     return (
-        <>
-            {success ? 
-                (
-                    <section className="px-4 py-4 shadow border rounded-4 align-self-center">
-                        <h1 className="h1 mb-4 mt-2 text-center">You have successfully logged in your account!</h1>
-                        <p className="text-center fs-6 mt-3 lead">Go to <Link to='/'>Home</Link> now!</p>
-                    </section>
-                ) : (
-                    <section className="px-4 py-4 mx-4 shadow border rounded-4 align-self-center">
-                        <div 
-                            ref={errRef} 
-                            className={"alert alert-danger " + (errMsg ? null : 'd-none')} 
-                            role="alert" 
-                        >
-                            <div><i className="bi bi-exclamation-circle me-2"></i><strong>{errMsg}</strong></div>
-                        </div>
+        <section className="px-4 py-4 mx-4 shadow border rounded-4 align-self-center">
+            <div 
+                ref={errRef} 
+                className={"alert alert-danger " + (errMsg ? null : 'd-none')} 
+                role="alert" 
+            >
+                <div><i className="bi bi-exclamation-circle me-2"></i><strong>{errMsg}</strong></div>
+            </div>
 
-                        <h1 className="h1 mb-4 mt-2 text-center">S<u>IGN IN FOR</u>M</h1>
+            <h1 className="h1 mb-4 mt-2 text-center">S<u>IGN IN FOR</u>M</h1>
 
-                        <form onSubmit={handleSubmit} className="mx-4">
-                            <div className="mb-3">
-                                <label htmlFor="usernameInput" className="form-label lead">Username</label>
-                                <input 
-                                    type="text" 
-                                    id="usernameInput"
-                                    placeholder="Enter username here:"
-                                    className="form-control form-control-lg mb-1"
-                                    ref={userRef}
-                                    autoComplete="off" //to avoid auto suggestion of values from the input
-                                    value={user}
-                                    onChange={(e) => setUser(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="pwdInput" className="form-label lead">Password</label>
-                                <input 
-                                    type="password" 
-                                    id="pwdInput"
-                                    placeholder="Enter password here:" 
-                                    className="form-control form-control-lg mb-1"
-                                    value={pwd}
-                                    onChange={(e) => setPwd(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="d-flex">
-                                <button 
-                                    type="submit"
-                                    className="btn btn-lg btn-success flex-grow-1 mt-2"
-                                    disabled={!canSignIn}
-                                >
-                                    Sign In
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <p className="text-center fs-6 mt-3 lead">
-                            Need an Account? <br />
-                            <Link to='/register'>Sign Up</Link>
-                        </p>
-
-                    </section>
-                )
-            }
-        </>
+            <form onSubmit={handleSubmit} className="mx-4">
+                <div className="mb-3">
+                    <label htmlFor="usernameInput" className="form-label lead">Username</label>
+                    <input 
+                        type="text" 
+                        id="usernameInput"
+                        placeholder="Enter username here:"
+                        className="form-control form-control-lg mb-1"
+                        ref={userRef}
+                        autoComplete="off" //to avoid auto suggestion of values from the input
+                        value={user}
+                        onChange={(e) => setUser(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="pwdInput" className="form-label lead">Password</label>
+                    <input 
+                        type="password" 
+                        id="pwdInput"
+                        placeholder="Enter password here:" 
+                        className="form-control form-control-lg mb-1"
+                        value={pwd}
+                        onChange={(e) => setPwd(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="d-flex">
+                    <button 
+                        type="submit"
+                        className="btn btn-lg btn-success flex-grow-1 mt-2"
+                        disabled={!canSignIn}
+                    >
+                        Sign In
+                    </button>
+                </div>
+            </form>
+            
+            <p className="text-center fs-6 mt-3 lead">
+                Need an Account? <br />
+                <Link to='/register'>Sign Up</Link>
+            </p>
+        </section>
     )
 }
 
