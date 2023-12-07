@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import useAxiosPrivate from "../hooks/useAxiosPrivate"
+import { useNavigate, useLocation } from 'react-router-dom'
 //this is to get new accessToken value
 // import useRefreshToken from "../hooks/useRefreshToken"
 
@@ -7,6 +8,9 @@ const User = () => {
     const [users, setUsers] = useState()
     //define axiosPrivate that has interceptors that will handle JWT tokens that we need and retry get new accessToken if it expires
     const axiosPrivate = useAxiosPrivate()
+    //define navigate and location
+    const navigate = useNavigate()
+    const location = useLocation()
 
     //define refresh funciton that will give new value for acessToken
     // const refresh = useRefreshToken()
@@ -31,30 +35,36 @@ const User = () => {
 
             } catch (err) {
                 console.error('users error: ', err)
+                //back to login when refresh token expires
+                navigate('/login', {state: { from: location }, replace: true})
             }
         }
 
         getUsers()
+        
+        setTimeout(() => {
+            // cleanup function of useEffect
+            return () => {
+                //after page loads, set isMounted to false
+                isMounted = false
+                //abort or cancel any request if the page successfully loads
+                controller.abort()
+            }    
+        }, 2000);
 
-        // cleanup function of useEffect
-        return () => {
-            //after page loads, set isMounted to false
-            isMounted = false
-            //abort or cancel any request if the page successfully loads
-            controller.abort()
-        }
+        
 
     }, [])
 
     return (
         <article className="px-4 py-4 mx-4 shadow border rounded-4 align-self-center">
-            <h2 className="h2 mb-4 mt-2 text-center">L<u>IST OF USER</u>S</h2>
+            <h3 className="h3 mb-4 mt-2 text-center">LIST OF USERS</h3>
             {
                 users?.length 
                     ? (
-                        <ul class="list-group">
+                        <ul className="list-group">
                             {
-                                users.map((user, index) => <li key={index} className="list-group-item">{user?.username}</li>)
+                                users.map((user, index) => <li key={index} className="list-group-item">{index+1}. {user?.username}</li>)
                             }                            
                         </ul>
                     )
