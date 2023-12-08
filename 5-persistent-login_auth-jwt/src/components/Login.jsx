@@ -8,8 +8,8 @@ import axios from "../api/axios"
 const LOGIN_URL = '/auth' //endpoint url for backend api (nodeJS: 14-Data-Models)
 
 const Login = () => {
-    //custom hook to get setAuth state from context 
-    const { setAuth } = useAuth()
+    //custom hook to get setAuth, persist, and setPersist state from context 
+    const { setAuth, persist, setPersist } = useAuth()
 
     //initialize useNavigate()
     const navigate = useNavigate()
@@ -81,9 +81,19 @@ const Login = () => {
         }        
     }
 
+    const togglePersist = () => {
+        //reverse the value of persist everytime the user toggles the checkbox
+        setPersist(prev => !prev)
+    }
+
+    useEffect(() => {
+        //if persist value change then also change its value in the local storage
+        localStorage.setItem('persist', persist)
+    }, [persist])
+
     //check if username, password has a value.
     //this will return either true or false for disabling sign in button
-    const canSignIn = [user, pwd,].every(Boolean)
+    const canSignIn = [user, pwd].every(Boolean)
 
     return (
         <section className="px-4 py-4 mx-4 shadow border rounded-4 align-self-center">
@@ -123,6 +133,18 @@ const Login = () => {
                         onChange={(e) => setPwd(e.target.value)}
                         required
                     />
+                </div>
+                <div className="form-check mb-3">
+                    <input 
+                        className="form-check-input" 
+                        type="checkbox" 
+                        id="flexCheckDefault" 
+                        onChange={togglePersist}
+                        checked={persist}
+                    />
+                    <label className="form-check-label" htmlFor="flexCheckDefault">
+                        Do you trust this device?
+                    </label>
                 </div>
                 <div className="d-flex">
                     <button 

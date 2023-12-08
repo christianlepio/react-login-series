@@ -9,10 +9,12 @@ const PersistLogin = () => {
     const [isLoading, setIsLoading] = useState(true)
     //get refresh function from useRefreshToken custom hook
     const refresh = useRefreshToken()
-    //get auth state from useAuth custom hook
-    const { auth } = useAuth()
+    //get auth & persist state from useAuth custom hook
+    const { auth, persist } = useAuth()
 
     useEffect(() => {
+        let isMounted = true
+
         const verifyRefreshToken = async () => {
             try {
                 //get new accessToken
@@ -20,12 +22,15 @@ const PersistLogin = () => {
             } catch (err) {
                 console.error(err)
             } finally {
-                setIsLoading(false)
+                isMounted ? setIsLoading(false) : null
             }
         }
 
         //get new access token if there is no access token in auth else set is loading to false
-        !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false)
+        !auth?.accessToken ? verifyRefreshToken() : isMounted ? setIsLoading(false) : null
+
+        //clean up function of useEffect
+        return () => isMounted = false
 
     }, [])
 
@@ -37,9 +42,12 @@ const PersistLogin = () => {
     return (
         <>
             {
-                isLoading 
-                    ? <p className="lead mb-4 text-center me-1">Loading...</p>
-                    : <Outlet /> //these are the protected routes in AppRoutes components
+                !persist //if user do not trust the device then return the outlet without checking isLoading
+                    ? <Outlet /> //these are the child protected routes in AppRoutes components
+                    //isLoading here lets the app to process and get new accessToken to avoid going to login page when browser reloads
+                    : isLoading 
+                        ? <p className="lead mb-4 text-center me-1">Loading...</p>
+                        : <Outlet /> //these are the child protected routes in AppRoutes components
             }
         </>
     )

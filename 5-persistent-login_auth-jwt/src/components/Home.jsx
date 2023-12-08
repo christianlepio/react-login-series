@@ -1,16 +1,14 @@
 import { Link, useNavigate } from "react-router-dom"
-import useAuth from "../hooks/useAuth"
+import useLogout from "../hooks/useLogout"
 
 const Home = () => {
-    //custom hook to get setAuth state from context 
-    const { setAuth } = useAuth()
     //initialize useNavigate()
     const navigate = useNavigate()
 
-    const logout = () => {
-        //if used in more components, this should be in context
-        //use axios to /logout endpoint
-        setAuth({})
+    const logout = useLogout()
+
+    const signOut = async () => {
+        await logout()
         navigate('/linkpage')
     }
 
@@ -28,7 +26,7 @@ const Home = () => {
                 <button 
                     type="button"
                     className="btn btn-warning flex-grow-1 mt-2"
-                    onClick={logout}
+                    onClick={signOut}
                 >
                     Sign Out
                 </button>
