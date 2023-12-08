@@ -1,0 +1,14 @@
+main {
+    height: 100vh;
+}
+
+@media (min-width: 992px) {
+    .homie {
+        width: 40vw;
+    }
+}
+@media (max-width: 576px) {
+    .homie {
+        width: 90vw;
+    }
+}
