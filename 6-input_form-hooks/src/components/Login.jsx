@@ -2,14 +2,19 @@ import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 //import custom hook
 import useAuth from "../hooks/useAuth"
+//custom hook that handles the value/reset for user and 
+//handles value and onChange attribute object
+import useInput from "../hooks/useInput" 
+//custom hook that saves value of checkbox in localStorage
+import useToggle from "../hooks/useToggle"
 
 import axios from "../api/axios"
 
 const LOGIN_URL = '/auth' //endpoint url for backend api (nodeJS: 14-Data-Models)
 
 const Login = () => {
-    //custom hook to get setAuth, persist, and setPersist state from context 
-    const { setAuth, persist, setPersist } = useAuth()
+    //custom hook to get setAuth state from context 
+    const { setAuth } = useAuth()
 
     //initialize useNavigate()
     const navigate = useNavigate()
@@ -20,11 +25,13 @@ const Login = () => {
 
     const userRef = useRef()
     const errRef = useRef()
-
-    const [user, setUser] = useState('')
+    //get value, reset, attributeObj from custom hook useInput and rename it to user, resetUser, userAttribs
+    const [user, resetUser, userAttribs] = useInput('user', '')
     const [pwd, setPwd] = useState('')
 
     const [errMsg, setErrMsg] = useState('')
+    //get value, toggle from custom hook useToggle and rename it to check, toggleCheck
+    const [check, toggleCheck] = useToggle('persist', false)
 
     useEffect(() => {
         //focus on user input when page loads
@@ -61,7 +68,8 @@ const Login = () => {
             const roles = response?.data?.roles
             //set obj values for global auth 
             setAuth({ user, pwd, roles, accessToken })
-            setUser('')
+            //from useInput custom hook reset function
+            resetUser()
             setPwd('')
             //if user logged in, navigate page to where he/she  
             //requested before logging in, otherwise go to home page
@@ -80,16 +88,6 @@ const Login = () => {
             errRef.current.focus()
         }        
     }
-
-    const togglePersist = () => {
-        //reverse the value of persist everytime the user toggles the checkbox
-        setPersist(prev => !prev)
-    }
-
-    useEffect(() => {
-        //if persist value change then also change its value in the local storage
-        localStorage.setItem('persist', persist)
-    }, [persist])
 
     //check if username, password has a value.
     //this will return either true or false for disabling sign in button
@@ -117,8 +115,8 @@ const Login = () => {
                         className="form-control form-control-lg mb-1"
                         ref={userRef}
                         autoComplete="off" //to avoid auto suggestion of values from the input
-                        value={user}
-                        onChange={(e) => setUser(e.target.value)}
+                        //spread userAttribs (attributeObj) from custom hook useInput
+                        {...userAttribs}
                         required
                     />
                 </div>
@@ -139,8 +137,8 @@ const Login = () => {
                         className="form-check-input" 
                         type="checkbox" 
                         id="flexCheckDefault" 
-                        onChange={togglePersist}
-                        checked={persist}
+                        onChange={toggleCheck}
+                        checked={check}
                     />
                     <label className="form-check-label" htmlFor="flexCheckDefault">
                         Do you trust this device?

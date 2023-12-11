@@ -4,13 +4,17 @@ import { Outlet } from "react-router-dom"
 import useRefreshToken from "../hooks/useRefreshToken"
 import useAuth from "../hooks/useAuth"
 import { useEffect, useState } from "react"
+import useLocalStorage from "../hooks/useLocalStorage" //custom hook to set/get the value of input in localStorage
 
 const PersistLogin = () => {
     const [isLoading, setIsLoading] = useState(true)
     //get refresh function from useRefreshToken custom hook
     const refresh = useRefreshToken()
-    //get auth & persist state from useAuth custom hook
-    const { auth, persist } = useAuth()
+    //get auth state from useAuth custom hook
+    const { auth } = useAuth()
+    //get the value of persist from the local storage if there is, otherwise set the value to false
+    //will return true or false 
+    const [persist] = useLocalStorage('persist', false)
 
     useEffect(() => {
         let isMounted = true
