@@ -64,10 +64,8 @@ const Login = () => {
 
             //get access token from response data
             const accessToken = response?.data?.accessToken
-            //get roles from response data
-            const roles = response?.data?.roles
             //set obj values for global auth 
-            setAuth({ user, pwd, roles, accessToken })
+            setAuth({ user, accessToken })
             //from useInput custom hook reset function
             resetUser()
             setPwd('')

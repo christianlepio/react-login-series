@@ -29,31 +29,33 @@ const User = () => {
                     //this will allow to cancel the request if we need to
                     signal: controller.signal
                 })
-                console.log('users: ', response.data)
-                //if the page loads then get and set all list of users
-                isMounted && setUsers(response.data)
 
+                if (response?.data) {
+                    //get all usernames from the response data
+                    const userNames = response.data.map(user => user.username)
+
+                    console.log('users: ', response.data)
+                    //if the page loads then get and set all list of users
+                    isMounted && setUsers(userNames)
+
+                    isMounted = false
+                }
             } catch (err) {
                 console.error('users error: ', err)
                 //back to login when refresh token expires
                 navigate('/login', {state: { from: location }, replace: true})
             }
         }
-
+        
         getUsers()
-        
-        setTimeout(() => {
-            // cleanup function of useEffect
-            return () => {
-                //after page loads, set isMounted to false
-                isMounted = false
-                //abort or cancel any request if the page successfully loads
+
+        // cleanup function of useEffect
+        return () => {
+            //abort or cancel any request if the page successfully loads
+            if (!isMounted) {
                 controller.abort()
-            }    
-        }, 2000);
-
-        
-
+            }
+        }    
     }, [])
 
     return (
@@ -64,7 +66,7 @@ const User = () => {
                     ? (
                         <ul className="list-group">
                             {
-                                users.map((user, index) => <li key={index} className="list-group-item">{index+1}. {user?.username}</li>)
+                                users.map((user, index) => <li key={index} className="list-group-item">{index+1}. {user}</li>)
                             }                            
                         </ul>
                     )

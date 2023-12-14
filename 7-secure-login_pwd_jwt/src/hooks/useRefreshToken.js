@@ -22,7 +22,6 @@ const useRefreshToken = () => {
             //return new accessToken, and roles value from response 
             return { 
                 ...prev, 
-                roles: response.data.roles, 
                 accessToken: response.data.accessToken                
             }
         })
