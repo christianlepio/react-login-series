@@ -54,6 +54,14 @@ const Login = () => {
     const handleUserInput = (e) => setUser(e.target.value)
     const handlePwdInput = (e) => setPwd(e.target.value)
 
+    const content = isLoading 
+        ? <h1 className="text-center h1 mb-5">Loading...</h1>
+        : (
+            <section>
+                
+            </section>
+        )
+
     return (
         <div>Login</div>
     )
