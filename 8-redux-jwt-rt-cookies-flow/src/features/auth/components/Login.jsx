@@ -58,7 +58,10 @@ const Login = () => {
         ? <h1 className="text-center h1 mb-5">Loading...</h1>
         : (
             <section>
-
+                {errMsg
+                    ? <p>{errMsg}</p>
+                    : null
+                }
             </section>
         )
 
