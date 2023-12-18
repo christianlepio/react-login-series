@@ -1,3 +1,4 @@
+//useSelector here is to get global state variable from store
 import { useSelector } from 'react-redux'
 import { selectCurrentUser, selectCurrentToken } from '../authSlice'
 import { Link } from 'react-router-dom'

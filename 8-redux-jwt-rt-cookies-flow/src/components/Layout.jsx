@@ -3,7 +3,8 @@ import { Outlet } from "react-router-dom"
 const Layout = () => {
     return (
         <main className="d-flex justify-content-center">
-            <Outlet />
+            {/* outlet here are the children routes */}
+            <Outlet /> 
         </main>
     )
 }

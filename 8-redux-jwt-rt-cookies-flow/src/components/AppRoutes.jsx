@@ -11,12 +11,16 @@ import UsersList from "../features/users/components/UsersList"
 const AppRoutes = () => {
     return (
         <Routes>
+            {/* parent route */}
             <Route path="/" element={<Layout />}>
+                {/* children routes */}
                 {/* public routes here */}
+                {/* index keyword means this is the default page of Layout. */}
                 <Route index element={<InitialPage />} />
                 <Route path="login" element={<Login />} />
 
                 {/* protected routes here */}
+                {/* nested routes */}
                 <Route element={<RequireAuth />}>
                     <Route path="welcome" element={<Welcome />} />
                     <Route path="userslist" element={<UsersList />} />

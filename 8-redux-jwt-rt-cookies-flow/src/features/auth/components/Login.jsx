@@ -1,8 +1,11 @@
 import { useRef, useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
+//useDispatch is to call/use global actions from authSlice
 import { useDispatch } from "react-redux"
+//action to set value for user & token state
 import { setCredentials } from "../authSlice"
+//generated custom hook from extended api slice (RTK query)
 import { useLoginMutation } from "../authApiSlice"
 
 const Login = () => {
@@ -13,7 +16,9 @@ const Login = () => {
     const [errMsg, setErrMsg] = useState('')
     const navigate = useNavigate()
 
+    // initialize RTK query custom hook mutation, also isLoading variable
     const [login, { isLoading }] = useLoginMutation()
+    // initialize dispatch
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -28,15 +33,21 @@ const Login = () => {
         e.preventDefault()
 
         try {
+            //login request using login mutation then pass the user & pwd as credentials params
             const userData = await login({ user, pwd }).unwrap()
+            //use unwrap which throws an error and lets you catch the error
+            //this lets the promise either reject/creates an error and allow to use try catch logic
 
+            //call setCredentials function inside dispatch
+            //pass all required parameter value to setCredentials function
             dispatch(setCredentials({ ...userData, user }))
 
             setUser('')
             setPwd('')
-
+            //navigate to welcome page after success login
             navigate('/welcome')
         } catch (err) {
+            // error handlers
             if (!err?.originalStatus) {
                 setErrMsg('No Server Response')
             } else if (err.originalStatus === 400) {
@@ -58,6 +69,7 @@ const Login = () => {
     //this will return either true or false for disabling sign in button
     const canSignIn = [user, pwd].every(Boolean)
 
+    //define content
     const content = isLoading 
         ? <h1 className="text-center h1 mb-5">Loading...</h1>
         : (
@@ -102,7 +114,7 @@ const Login = () => {
                     <div className="d-flex">
                         <button 
                             type="submit"
-                            className="btn btn-lg btn-success flex-grow-1 mt-2"
+                            className="btn btn-lg btn-success flex-grow-1 mt-2 mb-3"
                             disabled={!canSignIn}
                         >
                             Sign In

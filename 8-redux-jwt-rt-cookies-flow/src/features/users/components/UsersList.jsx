@@ -1,7 +1,11 @@
+//generated custom hook from extended api slice (RTK query)
 import { useGetUsersQuery } from "../usersApiSlice"
 import { Link } from "react-router-dom"
 
 const UsersList = () => {
+    // initialize RTK query custom hook mutation, also 
+    // get isLoading, isSuccess, isError, error variable from custom RTK query hook
+    // rename data variable to 'users'
     const { 
         data: users,
         isLoading, 
@@ -10,6 +14,7 @@ const UsersList = () => {
         error
     } = useGetUsersQuery()
 
+    // define content
     let content
 
     if (isLoading) {
