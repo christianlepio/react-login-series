@@ -6,6 +6,7 @@ import InitialPage from "./InitialPage"
 import Login from "../features/auth/components/Login"
 import Welcome from "../features/auth/components/Welcome"
 import RequireAuth from "../features/auth/components/RequireAuth"
+import UsersList from "../features/users/components/UsersList"
 
 const AppRoutes = () => {
     return (
@@ -18,6 +19,7 @@ const AppRoutes = () => {
                 {/* protected routes here */}
                 <Route element={<RequireAuth />}>
                     <Route path="welcome" element={<Welcome />} />
+                    <Route path="userslist" element={<UsersList />} />
                 </Route>
             </Route>
         </Routes>
